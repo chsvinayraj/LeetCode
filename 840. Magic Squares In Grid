@@ -1,0 +1,72 @@
+class Solution {
+    public int numMagicSquaresInside(int[][] grid) {
+        int count = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                // passing each 3x3 grid to checkgrid function
+                if (checkgrid(i, j, grid)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    boolean checkgrid(int row, int col, int[][] grid) {
+        //checking if it is a 3x3 grid or not
+        if (row + 2 >= grid.length)
+            return false;
+        if (col + 2 >= grid[0].length)
+            return false;
+
+        int[] count = new int[10]; // to store count of numbers from 1 to 9
+        int rowSum = -1;
+        for (int i = row; i < row + 3; i++) {
+            int sum = 0;
+            for (int j = col; j < col + 3; j++) {
+                if (grid[i][j] > 9 || grid[i][j] == 0)  return false; 
+                // to check if there is any number greater than 9 or equals to zero
+                count[grid[i][j]]++;
+                if (count[grid[i][j]] > 1)   return false;
+                // to check if there are more than one repeated number
+
+                sum += grid[i][j];
+                // calculating row wise sum
+            }
+            if (rowSum == -1)   rowSum = sum;
+                // storing row sum of first row of 3x3 grid
+            else {
+                if (rowSum != sum)  return false;
+                // checking if first row sum equals to current row sum
+            }
+        }
+
+        int colSum = -1;
+        for (int j = col; j < col + 3; j++) {
+            int sum = 0;
+            for (int i = row; i < row + 3; i++) {
+                sum += grid[i][j];
+                //calculating column wise sum
+            }
+            if (colSum == -1)   colSum = sum;
+            // storing colum sum of first column
+            else {
+                if (colSum != sum)  return false;
+                // checking if first column sum equals to current column sum
+            }
+        }
+
+        // calculating diagonals sums and checking if equal or not
+        int d1Sum = 0;
+        int d2Sum = 0;
+        int d1col = col;
+        int d2col = col + 2;
+        for (int i = row; i < row + 3; i++) {
+            d1Sum += grid[i][d1col++];
+            d2Sum += grid[i][d2col--];
+        }
+        if (d1Sum != d2Sum)
+            return false;
+        return true;
+    }
+}
